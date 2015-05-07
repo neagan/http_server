@@ -1,28 +1,42 @@
 'use strict';
 
 var bodyparser = require('body-parser');
+var fs = require('fs');
+
+var fileNum = 0
 
 module.exports = function(router) {
   router.use(bodyparser.json());
 
-  router.get('/notes', function(res, req) {
+  router.get('/comments', function(req, res) {
 
   });
 
-  router.post('/notes', function(res, req) {
+  router.post('/comments', function(req, res) {
+
+    var fileName = __dirname + '/data/' +  fileNum;
+
+    fs.writeFile(fileName, JSON.stringify(req.body), function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        fileNum++;
+        res.end();
+      }
+    });
 
   });
 
-  router.put('/notes', function(res, req) {
+  router.put('/comments', function(req, res) {
 
   });
 
-  router.patch('/notes', function(res, req) {
+  router.patch('/comments', function(req, res) {
 
   });
 
   // Delete is a reserved word?
-  router.delete('/notes', function(res, req) {
+  router.delete('/comments', function(req, res) {
 
   });
-}
+};
