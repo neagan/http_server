@@ -8,31 +8,32 @@ var fileNum = 0
 module.exports = function(router) {
   router.use(bodyparser.json());
 
+  // Gets array of files
   router.get('/comments', function(req, res) {
     var dir = __dirname + '/data/';
 
-    // Returns array of files
     fs.readdir(dir, function(err, files) {
       if (err) {
-        throw err;
+        console.log(err);
       }
-      res.send(files.toString());
+      files.toString() ? res.send(files.toString()) : res.send('No files exist');
     });
   });
 
-  // Returns specific file contents
+  // Gets specific file contents
   router.get('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
     fs.readFile(file, function(err, data) {
       try {
-        res.send(data.toString());
+        res.json(data.toString());
       } catch (err) {
         res.send('File not found');
       }
     });
   });
 
+  // Posts contents to next filename
   router.post('/comments', function(req, res) {
     var file = __dirname + '/data/' +  fileNum + '.json';
 
@@ -56,8 +57,15 @@ module.exports = function(router) {
 
   });
 
-  // Delete is a reserved word?
-  router.delete('/comments', function(req, res) {
+  // Removes specified file
+  router.delete('/comments/:file', function(req, res) {
+    var file = __dirname + '/data/' + req.params.file;
 
+    fs.unlink(file, function(err) {
+      if (err) {
+        console.log(err);
+      }
+      res.send('File ' + req.params.file + ' removed');
+    });
   });
 };
