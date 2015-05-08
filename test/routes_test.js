@@ -37,13 +37,13 @@ describe('http server with simple persistence', function() {
       });
   });
 
-  // Checks that json string is returned (should be object?)
+  // Checks that json object is returned
   it('should be able to retrieve the contents of a file', function(done) {
     chai.request('localhost:3000')
       .get('/api/comments/0.json')
       .end(function(err, res) {
         expect(err).to.eql(null);
-        expect(typeof res.body).to.eql('string'); // object?
+        expect(typeof res.body).to.eql('object');
         done();
       });
   });
