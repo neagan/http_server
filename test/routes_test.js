@@ -12,16 +12,6 @@ require('../server');
 describe('http server with simple persistence', function() {
   var testFile = __dirname.slice(0, -5) + '/data/0.json';
 
-  // Reset data folder after tests (only deletes 0.json right now)
-  // after(function(done) {
-  //   fs.unlink(testFile, function(err) {
-  //     if (err) {
-  //       throw err;
-  //     }
-  //     done();
-  //   })
-  // });
-
   // Need to delete file '0' before test or else invalid
   it('should be able to create a new comment', function(done) {
     chai.request('localhost:3000')
