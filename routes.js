@@ -34,6 +34,7 @@ module.exports = function(router) {
   });
 
   // Posts contents to next filename
+  // Currently does not allow for file name setting
   router.post('/comments', function(req, res) {
     var file = __dirname + '/data/' +  fileNum + '.json';
 
@@ -49,7 +50,17 @@ module.exports = function(router) {
 
   });
 
-  router.put('/comments', function(req, res) {
+  // Replaces file with new content
+  router.put('/comments/:file', function(req, res) {
+    var file = __dirname + '/data/' + req.params.file;
+
+    fs.writeFile(file, JSON.stringify(req.body, null, 2), function(err) {
+      if (err) {
+        console.log(err);
+      }
+      res.json(req.body);
+      res.end();
+    });
 
   });
 

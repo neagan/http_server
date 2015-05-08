@@ -13,6 +13,7 @@ describe('http server with simple persistence', function() {
   var testFile = __dirname.slice(0, -5) + '/data/0.json';
 
   // Need to delete file '0' before test or else invalid
+  // Should probably be able to set filename
   it('should be able to create a new comment', function(done) {
     chai.request('localhost:3000')
       .post('/api/comments')
@@ -36,13 +37,24 @@ describe('http server with simple persistence', function() {
       });
   });
 
-  // Checks that json string is returned
+  // Checks that json string is returned (should be object?)
   it('should be able to retrieve the contents of a file', function(done) {
     chai.request('localhost:3000')
       .get('/api/comments/0.json')
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(typeof res.body).to.eql('string'); // object?
+        done();
+      });
+  });
+
+  it('should be able to replace a file\'s contents', function(done) {
+    chai.request('localhost:3000')
+      .put('/api/comments/0.json')
+      .send({name: 'replace', email: 'replace@replace.com', comment: 'none'})
+      .end(function(err, res) {
+        expect(err).to.eql(null);
+        expect(res.body.name).to.eql('replace');
         done();
       });
   });
