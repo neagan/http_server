@@ -26,7 +26,6 @@ describe('http server with simple persistence', function() {
       });
   });
 
-  // Only retrieves one file currently (0.json)
   it('should be able to retrieve a list of files', function(done) {
     chai.request('localhost:3000')
       .get('/api/comments')

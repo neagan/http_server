@@ -8,7 +8,7 @@ var fileNum = 0;
 module.exports = function(router) {
   router.use(bodyparser.json());
 
-  // Gets array of files
+  // Gets array of files *Working*
   router.get('/comments', function(req, res) {
     var dir = __dirname + '/data/';
 
@@ -20,7 +20,7 @@ module.exports = function(router) {
     });
   });
 
-  // Gets specific file contents
+  // Gets specific file contents *Working*
   router.get('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
@@ -33,7 +33,7 @@ module.exports = function(router) {
     });
   });
 
-  // Posts contents to next filename
+  // Posts contents to next filename *Partially Working*
   // Currently does not allow for file name setting
   router.post('/comments', function(req, res) {
     var file = __dirname + '/data/' +  fileNum + '.json';
@@ -50,7 +50,7 @@ module.exports = function(router) {
 
   });
 
-  // Replaces file with new content
+  // Replaces file with new content *Working*
   router.put('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
@@ -64,19 +64,33 @@ module.exports = function(router) {
 
   });
 
+  // Updates file *Not Working*
   router.patch('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
     fs.readFile(file, function(err, data) {
-      if (err) {
-        console.log(err);
+      try {
+        var combined = (function(o1, o2) {
+          for (var key in o2) {
+            o1[key] = o2[key];
+          }
+          return o1;
+        })(JSON.parse(data), req.body);
+
+        fs.writeFile(file, JSON.stringify(combined, null, 2), function(err) {
+          if (err) {
+            console.log(err);
+          }
+          res.json(combined);
+          res.end();
+        });
+      } catch (err) {
+        res.send('File not found');
       }
-      res.json(req.body);
-      res.end();
     });
   });
 
-  // Removes specified file
+  // Removes specified file *Working*
   router.delete('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
