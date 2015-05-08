@@ -9,14 +9,17 @@ module.exports = function(router) {
   router.use(bodyparser.json());
 
   router.get('/comments', function(req, res) {
+    var dir = __dirname + '/data/';
 
+    fs.readdir(dir, function(err, files) {
+      res.send(files.toString());
+    })
   });
 
   router.post('/comments', function(req, res) {
+    var file = __dirname + '/data/' +  fileNum;
 
-    var fileName = __dirname + '/data/' +  fileNum;
-
-    fs.writeFile(fileName, JSON.stringify(req.body, null, 2), function(err) {
+    fs.writeFile(file, JSON.stringify(req.body, null, 2), function(err) {
       if (err) {
         console.log(err);
       } else {
