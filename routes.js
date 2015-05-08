@@ -16,11 +16,12 @@ module.exports = function(router) {
 
     var fileName = __dirname + '/data/' +  fileNum;
 
-    fs.writeFile(fileName, JSON.stringify(req.body), function(err) {
+    fs.writeFile(fileName, JSON.stringify(req.body, null, 2), function(err) {
       if (err) {
         console.log(err);
       } else {
         fileNum++;
+        res.json(req.body);
         res.end();
       }
     });
