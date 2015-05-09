@@ -31,12 +31,11 @@ describe('http server with simple persistence', function() {
       .get('/api/comments')
       .end(function(err, res) {
         expect(err).to.eql(null);
-        expect(res.text).to.eql('0.json');
+        expect(res.text).to.eql('0.json\nSpecify file name in url');
         done();
       });
   });
 
-  // Checks that json object is returned
   it('should be able to retrieve the contents of a file', function(done) {
     chai.request('localhost:3000')
       .get('/api/comments/0.json')
@@ -47,13 +46,28 @@ describe('http server with simple persistence', function() {
       });
   });
 
+  it('should be able to update a file\'s contents', function(done) {
+    chai.request('localhost:3000')
+      .patch('/api/comments/0.json')
+      .send({name: 'update'})
+      .end(function(err, res) {
+        expect(err).to.eql(null);
+        expect(res.body.name).to.eql('update');
+        expect(res.body.email).to.eql('test@test.com');
+        expect(res.body.comment).to.eql('this is test');
+        done();
+      });
+  });
+
   it('should be able to replace a file\'s contents', function(done) {
     chai.request('localhost:3000')
       .put('/api/comments/0.json')
-      .send({name: 'replace', email: 'replace@replace.com', comment: 'none'})
+      .send({name: 'replace all'})
       .end(function(err, res) {
         expect(err).to.eql(null);
-        expect(res.body.name).to.eql('replace');
+        expect(res.body.name).to.eql('replace all');
+        expect(res.body.email).to.eql(undefined);
+        expect(res.body.comment).to.eql(undefined);
         done();
       });
   });

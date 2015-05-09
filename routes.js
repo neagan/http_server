@@ -16,7 +16,10 @@ module.exports = function(router) {
       if (err) {
         console.log(err);
       }
-      files.toString() ? res.send(files.toString()) : res.send('No files exist');
+      // Check if dir has any files
+      files.toString() ? res.send('Current files:\n'
+                              + files.toString() + '\nSpecify file name in url')
+                        : res.send('No files exist');
     });
   });
 
@@ -25,6 +28,7 @@ module.exports = function(router) {
     var file = __dirname + '/data/' + req.params.file;
 
     fs.readFile(file, function(err, data) {
+      // Prevent server from crashing on bad file name
       try {
         res.send(data.toString());
       } catch (err) {
@@ -33,8 +37,7 @@ module.exports = function(router) {
     });
   });
 
-  // Posts contents to next filename *Partially Working*
-  // Currently does not allow for file name setting
+  // Posts contents to next filename
   router.post('/comments', function(req, res) {
     var file = __dirname + '/data/' +  fileNum + '.json';
 
@@ -50,7 +53,26 @@ module.exports = function(router) {
 
   });
 
-  // Replaces file with new content *Working*
+  // Post contents to specified file name
+  router.post('/comments/:file', function(req, res) {
+    var file = __dirname + '/data/' + req.params.file;
+
+    // Check for .json in filename
+    file.slice(-5) !== '.json' ? file += '.json' : file;
+
+    fs.writeFile(file, JSON.stringify(req.body, null, 2), function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        fileNum++;
+        res.json(req.body);
+        res.end();
+      }
+    });
+
+  });
+
+  // Replaces file with new content
   router.put('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
@@ -64,7 +86,7 @@ module.exports = function(router) {
 
   });
 
-  // Updates file *Not Working*
+  // Updates file
   router.patch('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
@@ -90,7 +112,7 @@ module.exports = function(router) {
     });
   });
 
-  // Removes specified file *Working*
+  // Removes specified file
   router.delete('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
