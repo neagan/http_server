@@ -10,13 +10,11 @@ chai.use(chaihttp);
 require('../server');
 
 describe('http server with simple persistence', function() {
-  var testFile = __dirname.slice(0, -5) + '/data/0.json';
+  var testFile = __dirname.slice(0, -5) + '/data/test.json';
 
-  // Need to delete file '0' before test or else invalid
-  // Should probably be able to set filename
-  it('should be able to create a new comment', function(done) {
+  it('should be able to create a new comment by filename', function(done) {
     chai.request('localhost:3000')
-      .post('/api/comments')
+      .post('/api/comments/test')
       .send({name: 'test', email: 'test@test.com', comment: 'this is test'})
       .end(function(err, res) {
         expect(err).to.eql(null);
@@ -31,24 +29,25 @@ describe('http server with simple persistence', function() {
       .get('/api/comments')
       .end(function(err, res) {
         expect(err).to.eql(null);
-        expect(res.text).to.eql('0.json\nSpecify file name in url');
+        expect(res.text).to.eql('test.json');
         done();
       });
   });
 
   it('should be able to retrieve the contents of a file', function(done) {
     chai.request('localhost:3000')
-      .get('/api/comments/0.json')
+      .get('/api/comments/test.json')
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(typeof res.body).to.eql('object');
+        expect(res.body.name).to.eql('test');
         done();
       });
   });
 
   it('should be able to update a file\'s contents', function(done) {
     chai.request('localhost:3000')
-      .patch('/api/comments/0.json')
+      .patch('/api/comments/test.json')
       .send({name: 'update'})
       .end(function(err, res) {
         expect(err).to.eql(null);
@@ -61,7 +60,7 @@ describe('http server with simple persistence', function() {
 
   it('should be able to replace a file\'s contents', function(done) {
     chai.request('localhost:3000')
-      .put('/api/comments/0.json')
+      .put('/api/comments/test.json')
       .send({name: 'replace all'})
       .end(function(err, res) {
         expect(err).to.eql(null);
@@ -74,7 +73,7 @@ describe('http server with simple persistence', function() {
 
   it('should be able to delete a file', function(done) {
     chai.request('localhost:3000')
-      .del('/api/comments/0.json')
+      .del('/api/comments/test.json')
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(fs.existsSync(testFile)).to.be.false;

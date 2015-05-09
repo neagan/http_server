@@ -8,7 +8,7 @@ var fileNum = 0;
 module.exports = function(router) {
   router.use(bodyparser.json());
 
-  // Gets array of files *Working*
+  // Gets array of files
   router.get('/comments', function(req, res) {
     var dir = __dirname + '/data/';
 
@@ -17,27 +17,26 @@ module.exports = function(router) {
         console.log(err);
       }
       // Check if dir has any files
-      files.toString() ? res.send('Current files:\n'
-                              + files.toString() + '\nSpecify file name in url')
+      files.toString() ? res.send(files.join(', '))
                         : res.send('No files exist');
     });
   });
 
-  // Gets specific file contents *Working*
+  // Gets specific file contents
   router.get('/comments/:file', function(req, res) {
     var file = __dirname + '/data/' + req.params.file;
 
     fs.readFile(file, function(err, data) {
       // Prevent server from crashing on bad file name
       try {
-        res.send(data.toString());
+        res.json(JSON.parse(data));
       } catch (err) {
         res.send('File not found');
       }
     });
   });
 
-  // Posts contents to next filename
+  // Posts contents to next numerical filename
   router.post('/comments', function(req, res) {
     var file = __dirname + '/data/' +  fileNum + '.json';
 
@@ -47,7 +46,6 @@ module.exports = function(router) {
       } else {
         fileNum++;
         res.json(req.body);
-        res.end();
       }
     });
 
@@ -66,7 +64,6 @@ module.exports = function(router) {
       } else {
         fileNum++;
         res.json(req.body);
-        res.end();
       }
     });
 
@@ -81,7 +78,6 @@ module.exports = function(router) {
         console.log(err);
       }
       res.json(req.body);
-      res.end();
     });
 
   });
@@ -92,6 +88,7 @@ module.exports = function(router) {
 
     fs.readFile(file, function(err, data) {
       try {
+        // Combine JSON objects
         var combined = (function(o1, o2) {
           for (var key in o2) {
             o1[key] = o2[key];
@@ -104,7 +101,6 @@ module.exports = function(router) {
             console.log(err);
           }
           res.json(combined);
-          res.end();
         });
       } catch (err) {
         res.send('File not found');
