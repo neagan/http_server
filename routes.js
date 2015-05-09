@@ -17,8 +17,11 @@ module.exports = function(router) {
         console.log(err);
       }
       // Check if dir has any files
-      files.toString() ? res.send(files.join(', '))
-                        : res.send('No files exist');
+      if (files.toString()) {
+        res.send(files.join(', '));
+      } else {
+        res.send('No files exist');
+      }
     });
   });
 
@@ -56,7 +59,9 @@ module.exports = function(router) {
     var file = __dirname + '/data/' + req.params.file;
 
     // Check for .json in filename
-    file.slice(-5) !== '.json' ? file += '.json' : file;
+    if (file.slice(-5) !== '.json') {
+      file += '.json';
+    }
 
     fs.writeFile(file, JSON.stringify(req.body, null, 2), function(err) {
       if (err) {

@@ -1,0 +1,16 @@
+{
+  "node": true,
+  "globals": {
+    "module": true,
+    "exports": true,
+    "require": true,
+    "console": true,
+    "Buffer": true,
+    "describe": true,
+    "it": true,
+    "before": true,
+    "after": true,
+    "beforeEach": true,
+    "afterEach": true
+  }
+}

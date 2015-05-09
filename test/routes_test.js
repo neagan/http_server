@@ -19,7 +19,7 @@ describe('http server with simple persistence', function() {
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(res.body.name).to.eql('test');
-        expect(fs.existsSync(testFile)).to.be.true;
+        expect(fs.existsSync(testFile)).to.eql(true);
         done();
       });
   });
@@ -76,7 +76,7 @@ describe('http server with simple persistence', function() {
       .del('/api/comments/test.json')
       .end(function(err, res) {
         expect(err).to.eql(null);
-        expect(fs.existsSync(testFile)).to.be.false;
+        expect(fs.existsSync(testFile)).to.eql(false);
         done();
       });
   });
