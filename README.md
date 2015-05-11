@@ -1,3 +1,8 @@
 HTTP Server with Simple Persistence
 ===================================
-Initial commit
+Contains GET, POST, PUT, PATCH, and DELETE capabilities
+
+File names will generate automatically or they can be set manually
+
+Create /data folder in project root to save files
+
